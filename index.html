@@ -101,17 +101,6 @@
     .clock{font-size:34px;margin-left:-46px}
   }
 
-  /* supply list on quest paper */
-  .paper{background:var(--paper) radial-gradient(rgba(120,90,40,.10) 1px,transparent 1.4px) 0 0/14px 14px;color:var(--ink)}
-  .paper h2{color:var(--red);-webkit-text-stroke:0;text-shadow:3px 3px 0 var(--ink)}
-  .paper .intro{color:#5a4a33}
-  .supply{display:grid;grid-template-columns:repeat(4,1fr);gap:44px 28px;list-style:none;margin:0;padding:0}
-  .supply li{display:flex;flex-direction:column;align-items:center;gap:14px}
-  .supply .pic{height:120px;display:grid;place-items:center}
-  .supply img{max-height:120px;width:auto;filter:drop-shadow(0 8px 0 rgba(26,20,16,.18))}
-  .supply b{font-family:Bangers,Impact,sans-serif;font-weight:400;font-size:24px;letter-spacing:.03em;border-top:3px dashed rgba(26,20,16,.35);padding-top:8px;min-width:70%;text-align:center}
-  @media (max-width:860px){ .supply{grid-template-columns:repeat(2,1fr)} .supply .pic{height:84px} .supply img{max-height:84px} }
-
   .strip{display:flex;gap:22px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 20px 22px;margin:0 -20px}
   .strip .frame{flex:0 0 min(80vw,700px);scroll-snap-align:center}
 
@@ -137,7 +126,6 @@
     <nav>
       <a class="opt" href="#fragman"><span lang="tr">Fragman</span><span lang="en">Trailer</span></a>
       <a class="opt" href="#bir-gece"><span lang="tr">Oynanış</span><span lang="en">Gameplay</span></a>
-      <a class="opt" href="#silahlar"><span lang="tr">Silahlar</span><span lang="en">Weapons</span></a>
       <button class="langbtn" id="langbtn" type="button" aria-label="Dil / Language">EN</button>
     </nav>
   </div>
@@ -209,23 +197,6 @@
         <div class="frame"><img src="/assets/yetenek.webp" width="1280" height="720" loading="lazy" alt=""></div>
       </div>
     </div>
-  </div>
-</section>
-
-<section id="silahlar" class="paper">
-  <div class="wrap">
-    <h2 class="bang"><span lang="tr">İkmal listesi</span><span lang="en">Supply list</span></h2>
-    <p class="intro"><span lang="tr">Tabancadan plazma atara 12 silah. İstersen kendin taşı, istersen taretine tak.</span><span lang="en">Twelve weapons, from a pistol to a plasma gun. Carry one yourself or mount it on a turret.</span></p>
-    <ul class="supply">
-      <li><div class="pic"><img src="/assets/w_rifle.webp" alt=""></div><b><span lang="tr">Taarruz Tüfeği</span><span lang="en">Assault Rifle</span></b></li>
-      <li><div class="pic"><img src="/assets/w_shotgun.webp" alt=""></div><b><span lang="tr">Pompalı</span><span lang="en">Shotgun</span></b></li>
-      <li><div class="pic"><img src="/assets/w_sniper.webp" alt=""></div><b><span lang="tr">Keskin Nişancı</span><span lang="en">Sniper Rifle</span></b></li>
-      <li><div class="pic"><img src="/assets/w_lmg.webp" alt=""></div><b><span lang="tr">Ağır Makineli</span><span lang="en">Heavy MG</span></b></li>
-      <li><div class="pic"><img src="/assets/w_rocket.webp" alt=""></div><b><span lang="tr">Roketatar</span><span lang="en">Rocket Launcher</span></b></li>
-      <li><div class="pic"><img src="/assets/w_flame.webp" alt=""></div><b><span lang="tr">Alev Makinesi</span><span lang="en">Flamethrower</span></b></li>
-      <li><div class="pic"><img src="/assets/w_tesla.webp" alt=""></div><b>Tesla</b></li>
-      <li><div class="pic"><img src="/assets/w_plasma.webp" alt=""></div><b><span lang="tr">Plazma Atar</span><span lang="en">Plasma Gun</span></b></li>
-    </ul>
   </div>
 </section>
 
