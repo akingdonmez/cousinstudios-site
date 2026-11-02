@@ -3,23 +3,293 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cousin Studios</title>
+<title>Hold Until Dawn | Cousin Studios</title>
+<meta name="description" content="Hold Until Dawn: geceleri zombilere karşı üssünü savun, gündüz taret ve barikat kur, şafağa kadar dayan. Cousin Studios'un mobil oyunu.">
+<meta property="og:title" content="Hold Until Dawn">
+<meta property="og:description" content="Gece boyunca üssünü zombilere karşı savun, şafağa kadar dayan. / Defend your base and hold until dawn.">
+<meta property="og:image" content="https://cousinstudios.com/assets/arkaplan_poster.jpg">
+<meta property="og:url" content="https://cousinstudios.com/">
+<meta name="theme-color" content="#1e2342">
+<link rel="icon" href="/assets/favicon.png">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-  :root { --bg:#fbfaf7; --fg:#1f1d1a; --muted:#6b655c; --accent:#b4471f; }
-  @media (prefers-color-scheme: dark) { :root { --bg:#16140f; --fg:#ece7de; --muted:#a69f93; --accent:#f08a5d; } }
-  body { margin:0; background:var(--bg); color:var(--fg); font:17px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; }
-  main { max-width:640px; margin:0 auto; padding:64px 16px; }
-  h1 { font-size:2rem; margin:0 0 .2em; } a { color:var(--accent); } .muted { color:var(--muted); }
+  /* Game palette: HUD navy, quest paper, hazard yellow, alarm red, dawn orange, outline ink */
+  :root{ --ink:#1a1410; --navy:#1e2342; --navy2:#151931; --paper:#efe3c6; --paper2:#e4d4ae; --hazard:#ffc93c; --red:#d8382c; --dawn:#ff8a3d; --fg:#f6f1e7; --mute:#b9bdd8; }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--navy);color:var(--fg);font:17px/1.6 Rubik,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+  img,video{max-width:100%;height:auto;display:block}
+  a{color:var(--hazard)}
+  :focus-visible{outline:3px solid var(--hazard);outline-offset:3px}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 20px}
+  html[lang=tr] [lang=en], html[lang=en] [lang=tr]{display:none !important}
+  .bang{font-family:Bangers,Impact,sans-serif;font-weight:400;letter-spacing:.03em;line-height:.95}
+
+  /* chunky in-game button */
+  .btn{display:inline-flex;align-items:center;gap:10px;font-family:Bangers,Impact,sans-serif;font-size:26px;letter-spacing:.04em;line-height:1;color:#fff;text-decoration:none;
+       background:var(--red);border:4px solid var(--ink);border-radius:14px;padding:14px 26px 12px;box-shadow:0 6px 0 var(--ink);
+       text-shadow:2px 2px 0 var(--ink);transition:transform .12s,box-shadow .12s}
+  .btn:hover{transform:translateY(-2px);box-shadow:0 8px 0 var(--ink)}
+  .btn:active{transform:translateY(4px);box-shadow:0 2px 0 var(--ink)}
+  .gp{display:inline-flex;align-items:center;gap:12px;background:#000;color:#fff;border:2px solid #8a8a8a;border-radius:12px;padding:9px 20px 9px 16px;text-decoration:none}
+  .gp small{display:block;font-size:11px;opacity:.85;line-height:1.1}
+  .gp b{display:block;font-size:21px;line-height:1.1;font-weight:500}
+
+  header.top{position:absolute;inset:0 0 auto 0;z-index:5}
+  header.top .wrap{display:flex;align-items:center;gap:20px;height:72px}
+  .brand{display:flex;align-items:center;gap:10px;color:#fff;text-decoration:none;font-weight:700}
+  .brand img{width:36px;height:36px;border-radius:10px;border:2px solid var(--ink)}
+  nav{margin-left:auto;display:flex;gap:24px;align-items:center}
+  nav a{color:#e9e6f3;text-decoration:none;font-size:15px}
+  nav a:hover{color:#fff;text-decoration:underline}
+  .langbtn{border:2px solid var(--ink);background:var(--hazard);color:var(--ink);border-radius:10px;padding:5px 12px;font:700 14px Rubik,sans-serif;cursor:pointer;box-shadow:0 3px 0 var(--ink)}
+  @media (max-width:760px){ nav a.opt{display:none} }
+
+  /* HERO: the one bold moment */
+  .hero{position:relative;min-height:100vh;min-height:100svh;display:flex;align-items:flex-end;overflow:hidden;isolation:isolate;background:var(--navy2)}
+  .hero video,.hero .poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;max-width:none}
+  .hero::after{content:"";position:absolute;inset:0;z-index:-1;
+    background:linear-gradient(0deg,var(--navy) 0%,rgba(30,35,66,.85) 22%,rgba(30,35,66,.25) 55%,rgba(21,25,49,.55) 100%)}
+  .hero .wrap{width:100%;padding-bottom:9vh}
+  .title{margin:0;font-size:clamp(78px,15vw,210px);color:#fff;
+         -webkit-text-stroke:clamp(3px,.6vw,7px) var(--ink);paint-order:stroke fill;text-shadow:0 .06em 0 var(--ink)}
+  .title{font-feature-settings:"locl" 0}
+  .title .l1{display:block;font-size:.52em;color:var(--fg)}
+  .title .dawn{display:block;color:var(--dawn);font-size:1.12em;text-shadow:0 .06em 0 var(--ink),0 0 .5em rgba(255,138,61,.45)}
+  .lead{max-width:46ch;font-size:clamp(18px,2vw,21px);margin:22px 0 30px;color:#eef0fa}
+  .cta{display:flex;flex-wrap:wrap;gap:16px;align-items:center}
+  .vidtoggle{position:absolute;right:20px;top:86px;width:40px;height:40px;border-radius:12px;border:2px solid var(--ink);background:rgba(255,255,255,.9);cursor:pointer;display:grid;place-items:center}
+  /* entrance: night line first, then DAWN rises like the sun */
+  @media (prefers-reduced-motion:no-preference){
+    .title .l1{animation:drop .7s cubic-bezier(.2,.9,.3,1.2) both .15s}
+    .title .dawn{animation:rise 1.1s cubic-bezier(.2,.9,.25,1) both .55s}
+    .lead,.cta{animation:fade .6s ease both 1.25s}
+    @keyframes drop{from{opacity:0;transform:translateY(-30px)}to{opacity:1;transform:none}}
+    @keyframes rise{from{opacity:0;transform:translateY(60px) scale(.96);filter:brightness(.4)}to{opacity:1;transform:none;filter:none}}
+    @keyframes fade{from{opacity:0}to{opacity:1}}
+  }
+
+  section{padding:96px 0}
+  h2{margin:0 0 18px;font-size:clamp(46px,6.5vw,76px);color:#fff;-webkit-text-stroke:3px var(--ink);paint-order:stroke fill;text-shadow:0 4px 0 var(--ink)}
+  .intro{max-width:56ch;color:var(--mute);margin:0 0 44px;font-size:18px}
+
+  .frame{border:5px solid var(--ink);border-radius:18px;overflow:hidden;box-shadow:0 10px 0 var(--ink);background:#000}
+  .trailer video{width:100%;aspect-ratio:16/9;object-fit:cover}
+
+  /* one night, hour by hour (a real sequence, so it gets times) */
+  .night{background:var(--navy2)}
+  .hours{position:relative;display:grid;gap:72px}
+  .hours::before{content:"";position:absolute;left:94px;top:10px;bottom:10px;width:6px;border-radius:3px;
+     background:linear-gradient(180deg,var(--hazard) 0%,#6d74c9 45%,#6d74c9 60%,var(--dawn) 100%)}
+  .hour{display:grid;grid-template-columns:200px 1fr 1.15fr;gap:36px;align-items:center}
+  .clock{position:relative;z-index:1;justify-self:start;font-family:Bangers,Impact,sans-serif;font-size:44px;line-height:1;color:var(--ink);background:var(--hazard);border:4px solid var(--ink);border-radius:14px;padding:12px 16px 8px;box-shadow:0 5px 0 var(--ink)}
+  .h-night .clock{background:#9aa1ff}
+  .h-dawn .clock{background:var(--dawn)}
+  .hour h3{margin:0 0 10px;font-family:Bangers,Impact,sans-serif;font-weight:400;font-size:44px;letter-spacing:.03em;line-height:1}
+  .hour p{margin:0;color:var(--mute)}
+  .hour .frame{box-shadow:0 8px 0 var(--ink)}
+  @media (max-width:900px){
+    .hours::before{left:18px}
+    .hour{grid-template-columns:1fr;gap:16px;padding-left:46px}
+    .clock{font-size:34px;margin-left:-46px}
+  }
+
+  /* supply list on quest paper */
+  .paper{background:var(--paper) radial-gradient(rgba(120,90,40,.10) 1px,transparent 1.4px) 0 0/14px 14px;color:var(--ink)}
+  .paper h2{color:var(--red);-webkit-text-stroke:0;text-shadow:3px 3px 0 var(--ink)}
+  .paper .intro{color:#5a4a33}
+  .supply{display:grid;grid-template-columns:repeat(4,1fr);gap:44px 28px;list-style:none;margin:0;padding:0}
+  .supply li{display:flex;flex-direction:column;align-items:center;gap:14px}
+  .supply .pic{height:120px;display:grid;place-items:center}
+  .supply img{max-height:120px;width:auto;filter:drop-shadow(0 8px 0 rgba(26,20,16,.18))}
+  .supply b{font-family:Bangers,Impact,sans-serif;font-weight:400;font-size:24px;letter-spacing:.03em;border-top:3px dashed rgba(26,20,16,.35);padding-top:8px;min-width:70%;text-align:center}
+  @media (max-width:860px){ .supply{grid-template-columns:repeat(2,1fr)} .supply .pic{height:84px} .supply img{max-height:84px} }
+
+  .strip{display:flex;gap:22px;overflow-x:auto;scroll-snap-type:x mandatory;padding:6px 20px 22px;margin:0 -20px}
+  .strip .frame{flex:0 0 min(80vw,700px);scroll-snap-align:center}
+
+  .last{background:var(--navy2);text-align:center}
+  .last img.icon{width:132px;height:132px;border-radius:30px;border:5px solid var(--ink);box-shadow:0 8px 0 var(--ink);margin:0 auto 26px}
+  .last p{max-width:44ch;margin:0 auto 30px;color:var(--mute)}
+  .last .cta{justify-content:center}
+
+  footer{background:var(--ink);color:#b8ad9c;font-size:15px;padding:36px 0 44px}
+  footer .wrap{display:grid;grid-template-columns:1.3fr 1fr;gap:24px}
+  footer h4{margin:0 0 6px;color:#fff;font-size:16px}
+  footer p{margin:0 0 4px}
+  footer a{color:#efe3c6}
+  footer .links{display:flex;flex-wrap:wrap;gap:6px 20px;margin-top:12px}
+  @media (max-width:760px){ footer .wrap{grid-template-columns:1fr} }
 </style>
 </head>
 <body>
-<main>
-  <h1>Cousin Studios</h1>
-  <p class="muted">Bağımsız oyun stüdyosu · Independent game studio</p>
-  <h2>Hold Until Dawn</h2>
-  <p>Gece boyunca üssünü zombilere karşı savun, şafağa kadar dayan.<br><span class="muted">Defend your base against the undead and hold until dawn.</span></p>
-  <p><a href="/gizlilik/">Gizlilik Politikası ve Kullanım Şartları / Privacy Policy &amp; Terms</a></p>
-  <p>İletişim / Contact: <a href="mailto:info@cousinstudios.com">info@cousinstudios.com</a></p>
-</main>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="/"><img src="/assets/apple-touch-icon.png" alt="">Cousin Studios</a>
+    <nav>
+      <a class="opt" href="#fragman"><span lang="tr">Fragman</span><span lang="en">Trailer</span></a>
+      <a class="opt" href="#bir-gece"><span lang="tr">Oynanış</span><span lang="en">Gameplay</span></a>
+      <a class="opt" href="#silahlar"><span lang="tr">Silahlar</span><span lang="en">Weapons</span></a>
+      <button class="langbtn" id="langbtn" type="button" aria-label="Dil / Language">EN</button>
+    </nav>
+  </div>
+</header>
+
+<div class="hero">
+  <img class="poster" src="/assets/arkaplan_poster.jpg" alt="">
+  <video id="bgvid" autoplay muted loop playsinline preload="auto" poster="/assets/arkaplan_poster.jpg" aria-hidden="true">
+    <source src="/assets/arkaplan.mp4" type="video/mp4">
+  </video>
+  <button class="vidtoggle" id="vidtoggle" type="button" aria-label="Videoyu durdur / Pause video">
+    <svg id="ic-pause" width="14" height="14" viewBox="0 0 24 24"><path d="M6 4h4v16H6zM14 4h4v16h-4z" fill="#1a1410"/></svg>
+    <svg id="ic-play" width="14" height="14" viewBox="0 0 24 24" style="display:none"><path d="M7 4.5v15l13-7.5z" fill="#1a1410"/></svg>
+  </button>
+  <div class="wrap">
+    <h1 class="title bang"><span class="l1">HOLD UNTIL</span><span class="dawn">DAWN</span></h1>
+    <p class="lead">
+      <span lang="tr">Gündüz taretlerini kur, gece sürüyü durdur. Reaktörün ayakta kaldıkça oyun sürer. Kaç gece dayanabilirsin?</span>
+      <span lang="en">Build your turrets by day, stop the horde by night. As long as your reactor stands, you're still in it. How many nights can you last?</span>
+    </p>
+    <div class="cta">
+      <a class="btn" href="#fragman"><span lang="tr">Fragmanı izle</span><span lang="en">Watch the trailer</span></a>
+      <a class="gp" href="#iletisim" aria-label="Google Play">
+        <svg width="24" height="26" viewBox="0 0 22 24" aria-hidden="true"><path fill="#34a853" d="M1 1l11 11L1 23c-.6-.3-1-1-1-1.8V2.8C0 2 .4 1.3 1 1z"/><path fill="#fbbc04" d="M16 8l-4 4 4 4 4.6-2.6c1.3-.8 1.3-2 0-2.8z"/><path fill="#ea4335" d="M1 23l11-11 4 4L3.2 23.3c-.8.4-1.6.3-2.2-.3z"/><path fill="#4285f4" d="M1 1c.6-.6 1.4-.7 2.2-.3L16 8l-4 4z"/></svg>
+        <span><small lang="tr">Yakında</small><small lang="en">Coming soon on</small><b>Google Play</b></span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<section id="fragman">
+  <div class="wrap">
+    <h2 class="bang"><span lang="tr">Bu geceyi atlatabilir misin?</span><span lang="en">Can you survive the night?</span></h2>
+    <div class="frame trailer">
+      <video controls preload="none" playsinline poster="/assets/fragman_poster.jpg">
+        <source src="/assets/fragman.mp4" type="video/mp4">
+      </video>
+    </div>
+  </div>
+</section>
+
+<section id="bir-gece" class="night">
+  <div class="wrap">
+    <h2 class="bang"><span lang="tr">Bir gece, saat saat</span><span lang="en">One night, hour by hour</span></h2>
+    <p class="intro"><span lang="tr">Her gece aynı düzenle başlar ve her gece biraz daha zorlaşır.</span><span lang="en">Every night follows the same rhythm, and every night gets a little harder.</span></p>
+    <div class="hours">
+      <div class="hour h-day">
+        <div class="clock">14:00</div>
+        <div>
+          <h3><span lang="tr">Üssünü kur</span><span lang="en">Build your base</span></h3>
+          <p><span lang="tr">Dün gecenin parasıyla taret, duvar, kapı ve tuzak yerleştir. Silahını ve mermini al.</span><span lang="en">Spend last night's earnings on turrets, walls, gates and traps. Pick up your weapon and ammo.</span></p>
+        </div>
+        <div class="frame"><img src="/assets/insa.webp" width="1280" height="720" loading="lazy" alt=""></div>
+      </div>
+      <div class="hour h-night">
+        <div class="clock">00:00</div>
+        <div>
+          <h3><span lang="tr">Sürüyü durdur</span><span lang="en">Stop the horde</span></h3>
+          <p><span lang="tr">Zombiler dört bir yandan gelir: kazıyarak çıkanlar, patlayanlar, sıçrayanlar ve dev patronlar. Reaktörün düşerse her şey biter.</span><span lang="en">They come from every side: diggers, exploders, leapers and giant bosses. If your reactor falls, it's over.</span></p>
+        </div>
+        <div class="frame"><img src="/assets/gece.webp" width="1280" height="720" loading="lazy" alt=""></div>
+      </div>
+      <div class="hour h-dawn">
+        <div class="clock">06:00</div>
+        <div>
+          <h3><span lang="tr">Güçlen</span><span lang="en">Grow stronger</span></h3>
+          <p><span lang="tr">Sabaha çıktın. Yetenek kartını seç, ekipmanını geliştir, bir sonraki geceye hazırlan.</span><span lang="en">You made it to morning. Pick a skill card, upgrade your gear and get ready for the next night.</span></p>
+        </div>
+        <div class="frame"><img src="/assets/yetenek.webp" width="1280" height="720" loading="lazy" alt=""></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="silahlar" class="paper">
+  <div class="wrap">
+    <h2 class="bang"><span lang="tr">İkmal listesi</span><span lang="en">Supply list</span></h2>
+    <p class="intro"><span lang="tr">Tabancadan plazma atara 12 silah. İstersen kendin taşı, istersen taretine tak.</span><span lang="en">Twelve weapons, from a pistol to a plasma gun. Carry one yourself or mount it on a turret.</span></p>
+    <ul class="supply">
+      <li><div class="pic"><img src="/assets/w_rifle.webp" alt=""></div><b><span lang="tr">Taarruz Tüfeği</span><span lang="en">Assault Rifle</span></b></li>
+      <li><div class="pic"><img src="/assets/w_shotgun.webp" alt=""></div><b><span lang="tr">Pompalı</span><span lang="en">Shotgun</span></b></li>
+      <li><div class="pic"><img src="/assets/w_sniper.webp" alt=""></div><b><span lang="tr">Keskin Nişancı</span><span lang="en">Sniper Rifle</span></b></li>
+      <li><div class="pic"><img src="/assets/w_lmg.webp" alt=""></div><b><span lang="tr">Ağır Makineli</span><span lang="en">Heavy MG</span></b></li>
+      <li><div class="pic"><img src="/assets/w_rocket.webp" alt=""></div><b><span lang="tr">Roketatar</span><span lang="en">Rocket Launcher</span></b></li>
+      <li><div class="pic"><img src="/assets/w_flame.webp" alt=""></div><b><span lang="tr">Alev Makinesi</span><span lang="en">Flamethrower</span></b></li>
+      <li><div class="pic"><img src="/assets/w_tesla.webp" alt=""></div><b>Tesla</b></li>
+      <li><div class="pic"><img src="/assets/w_plasma.webp" alt=""></div><b><span lang="tr">Plazma Atar</span><span lang="en">Plasma Gun</span></b></li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2 class="bang"><span lang="tr">Oyundan kareler</span><span lang="en">From the game</span></h2>
+    <div class="strip">
+      <div class="frame"><img src="/assets/gece.webp" width="1280" height="720" loading="lazy" alt="Gece savunması / Night defence"></div>
+      <div class="frame"><img src="/assets/insa.webp" width="1280" height="720" loading="lazy" alt="Gündüz inşa / Building by day"></div>
+      <div class="frame"><img src="/assets/yetenek.webp" width="1280" height="720" loading="lazy" alt="Yetenek kartları / Skill cards"></div>
+      <div class="frame"><img src="/assets/menu.webp" width="1280" height="720" loading="lazy" alt="Komuta masası / Command desk"></div>
+    </div>
+  </div>
+</section>
+
+<section class="last" id="iletisim">
+  <div class="wrap">
+    <img class="icon" src="/assets/kapak.webp" width="132" height="132" alt="Hold Until Dawn">
+    <h2 class="bang"><span lang="tr">Şafak yaklaşıyor</span><span lang="en">Dawn is coming</span></h2>
+    <p><span lang="tr">Hold Until Dawn çok yakında Google Play'de, ücretsiz.</span><span lang="en">Hold Until Dawn is coming soon to Google Play, free to play.</span></p>
+    <div class="cta">
+      <span class="gp" role="img" aria-label="Google Play">
+        <svg width="24" height="26" viewBox="0 0 22 24" aria-hidden="true"><path fill="#34a853" d="M1 1l11 11L1 23c-.6-.3-1-1-1-1.8V2.8C0 2 .4 1.3 1 1z"/><path fill="#fbbc04" d="M16 8l-4 4 4 4 4.6-2.6c1.3-.8 1.3-2 0-2.8z"/><path fill="#ea4335" d="M1 23l11-11 4 4L3.2 23.3c-.8.4-1.6.3-2.2-.3z"/><path fill="#4285f4" d="M1 1c.6-.6 1.4-.7 2.2-.3L16 8l-4 4z"/></svg>
+        <span><small lang="tr">Yakında</small><small lang="en">Coming soon on</small><b>Google Play</b></span>
+      </span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div>
+      <h4>Cousin Studios</h4>
+      <p><span lang="tr">Türkiye'den bağımsız bir oyun stüdyosu. Hold Until Dawn ilk oyunumuz.</span><span lang="en">An independent game studio from Türkiye. Hold Until Dawn is our first game.</span></p>
+      <p>© 2026 Cousin Studios</p>
+    </div>
+    <div>
+      <h4><span lang="tr">Bize yazın</span><span lang="en">Get in touch</span></h4>
+      <p><a href="mailto:info@cousinstudios.com">info@cousinstudios.com</a></p>
+      <div class="links">
+        <a href="/gizlilik/"><span lang="tr">Gizlilik Politikası</span><span lang="en">Privacy Policy</span></a>
+        <a href="/gizlilik/#kvkk"><span lang="tr">KVKK Aydınlatma Metni</span><span lang="en">Data Protection Notice</span></a>
+        <a href="/gizlilik/#sartlar"><span lang="tr">Kullanım Şartları</span><span lang="en">Terms</span></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var root=document.documentElement, btn=document.getElementById('langbtn'), saved=null;
+  try{ saved=localStorage.getItem('cs_lang'); }catch(e){}
+  var lang = saved || ((navigator.language||'tr').toLowerCase().indexOf('tr')===0 ? 'tr' : 'en');
+  function set(l){ root.lang=l; btn.textContent = l==='tr' ? 'EN' : 'TR';
+    var links=document.querySelectorAll('footer .links a');
+    var map = l==='en' ? ['#privacy','#kvkk-en','#terms'] : ['','#kvkk','#sartlar'];
+    for(var i=0;i<links.length;i++) links[i].setAttribute('href','/gizlilik/'+map[i]);
+  }
+  set(lang);
+  btn.addEventListener('click',function(){ lang = lang==='tr'?'en':'tr'; set(lang); try{localStorage.setItem('cs_lang',lang);}catch(e){} });
+
+  var v=document.getElementById('bgvid'), t=document.getElementById('vidtoggle');
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function ui(){ var p=v.paused; document.getElementById('ic-pause').style.display=p?'none':''; document.getElementById('ic-play').style.display=p?'':'none'; }
+  if(reduce){ v.removeAttribute('autoplay'); v.pause(); } else { var pr=v.play(); if(pr&&pr.catch) pr.catch(function(){}); }
+  v.addEventListener('play',ui); v.addEventListener('pause',ui); ui();
+  t.addEventListener('click',function(){ v.paused ? v.play() : v.pause(); });
+})();
+</script>
 </body>
 </html>
