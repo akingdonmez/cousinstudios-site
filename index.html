@@ -54,15 +54,16 @@
   .hero video,.hero .poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;max-width:none}
   .hero::after{content:"";position:absolute;inset:0;z-index:-1;
     background:linear-gradient(0deg,var(--navy) 0%,rgba(30,35,66,.85) 22%,rgba(30,35,66,.25) 55%,rgba(21,25,49,.55) 100%)}
-  .hero .wrap{width:100%;padding-bottom:9vh}
+  .hero .wrap{width:100%;padding-bottom:9vh;display:flex;flex-direction:column;align-items:center;text-align:center}
   .title{margin:0;font-size:clamp(78px,15vw,210px);color:#fff;
          -webkit-text-stroke:clamp(3px,.6vw,7px) var(--ink);paint-order:stroke fill;text-shadow:0 .06em 0 var(--ink)}
   .title{font-feature-settings:"locl" 0}
   .title .l1{display:block;font-size:.52em;color:var(--fg)}
   .title .dawn{display:block;color:var(--dawn);font-size:1.12em;text-shadow:0 .06em 0 var(--ink),0 0 .5em rgba(255,138,61,.45)}
-  .logo{margin:0 0 0 -2%;width:clamp(300px,50vw,660px)}
+  .logo{margin:0 auto;width:clamp(300px,50vw,660px)}
   .logo img{width:100%;filter:drop-shadow(0 14px 30px rgba(0,0,0,.55))}
   @media (prefers-reduced-motion:no-preference){ .logo{animation:rise 1.1s cubic-bezier(.2,.9,.25,1) both .2s} }
+  .hero .cta{justify-content:center}
   .lead{max-width:46ch;font-size:clamp(18px,2vw,21px);margin:22px 0 30px;color:#eef0fa}
   .cta{display:flex;flex-wrap:wrap;gap:16px;align-items:center}
   .vidtoggle{position:absolute;right:20px;top:86px;width:40px;height:40px;border-radius:12px;border:2px solid var(--ink);background:rgba(255,255,255,.9);cursor:pointer;display:grid;place-items:center}
